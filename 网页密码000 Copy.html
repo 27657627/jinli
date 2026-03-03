@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>安全验证系统</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", monospace;
+}
+
+body {
+  background: #0a0a12;
+  color: #00e5ff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* 数字雨背景 */
+#matrix {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.12;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* 主卡片 */
+.card {
+  background: rgba(0,0,0,0.7);
+  border: 1px solid #00e5ff;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 420px;
+  padding: 30px 24px;
+  box-shadow: 0 0 30px rgba(0,229,255,0.2);
+  z-index: 1;
+  backdrop-filter: blur(6px);
+}
+
+.title {
+  font-size: 22px;
+  text-align: center;
+  margin-bottom: 24px;
+  text-shadow: 0 0 10px #00e5ff;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+}
+
+.ip-info {
+  color: #00ff9d;
+  text-align: center;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(0,0,0,0.5);
+  border: 1px solid #00e5ff;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 16px;
+  outline: none;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+input:focus {
+  box-shadow: 0 0 10px #00e5ff;
+  border-color: #00ffff;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background: rgba(0,119,255,0.2);
+  border: 1px solid #00e5ff;
+  border-radius: 8px;
+  color: #00e5ff;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+button:hover {
+  background: rgba(0,119,255,0.4);
+  box-shadow: 0 0 12px #00e5ff;
+  transform: translateY(-2px);
+}
+button:active {
+  transform: translateY(0);
+}
+
+.tip {
+  color: #ff4444;
+  text-align: center;
+  margin-top: 12px;
+  font-size: 14px;
+  height: 18px;
+  transition: all 0.3s ease;
+}
+
+/* 内容区默认隐藏 */
+.content {
+  display: none;
+  color: #ccc;
+  line-height: 1.8;
+  font-size: 15px;
+  margin-top: 20px;
+  animation: fadeIn 0.5s ease;
+}
+.content h3 {
+  color: #00e5ff;
+  margin-bottom: 12px;
+  font-size: 18px;
+}
+.content p {
+  margin: 10px 0;
+}
+/* 链接样式优化 */
+.custom-link {
+  display: inline-block;
+  color: #00ff9d;
+  text-decoration: none;
+  margin: 5px 0;
+  padding: 8px 12px;
+  border: 1px solid #00ff9d;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+.custom-link:hover {
+  background: rgba(0,255,157,0.1);
+  box-shadow: 0 0 8px #00ff9d;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* 适配小屏幕 */
+@media (max-width: 400px) {
+  .card {
+    padding: 20px 16px;
+  }
+  .title {
+    font-size: 20px;
+  }
+}
+</style>
+</head>
+
+<body>
+<canvas id="matrix"></canvas>
+
+<div class="card" id="box">
+  <div class="title">🔒 安全访问验证</div>
+  <div class="ip-info" id="ipText">正在获取IP...</div>
+
+  <input type="password" id="pwd" placeholder="输入访问密码">
+  <button onclick="check()">验证权限</button>
+  <div class="tip" id="tip"></div>
+
+  <div class="content" id="content">
+    <h3>✅ 欢迎来到新媒体货源供货平台</h3>
+    <h3>🌐 IP地址已被记录，禁止分享本网站否则拉黑处理！</h3>
+    <h3>🚫 严禁传播本网站，仅供内部人员使用</h3>
+    <p>🥇货源站①</p>
+    <a href="https://666.qhsup.top/" target="_blank" class="custom-link">点击跳转到[货源站①]</a><br>
+    <a href="about.html" class="custom-link">点击下载安卓📳APP[货源站①]</a>
+    
+    <p>🥈货源站②</p>
+    <a href="https://www.github.com" target="_blank" class="custom-link">点击跳转到[货源站②]</a><br>
+    <a href="about.html" class="custom-link">点击下载安卓📳APP[货源站②]</a>
+    
+    <p>🥉货源站③</p>
+    <a href="http://666.tianxia6666.top" target="_blank" class="custom-link">点击跳转到[货源站③]</a><br>
+    <a href="about.html" class="custom-link">点击下载安卓📳APP[货源站③]</a>
+
+    <p>📢 目前3个供货平台均为独立运营，所以需要单独注册账号使用！</p>
+  </div>
+</div>
+
+<script>
+// ================== 配置项 ==================
+const PASSWORD = "000"; // 修改这里设置你的密码
+const IP_API = "https://api.ipify.org?format=json"; // IP获取接口
+const VALIDITY_DURATION = 30 * 60 * 1000; // 30分钟有效期（毫秒）
+// ============================================
+
+let userIP = "未知";
+let isChecking = false; // 防止重复验证
+
+// 检查本地存储的验证状态是否有效
+function checkValidAuth() {
+  const authData = localStorage.getItem('authValidation');
+  if (!authData) return false;
+  
+  try {
+    const { expiresAt, ip } = JSON.parse(authData);
+    // 检查是否过期，且IP匹配（可选增强安全）
+    const now = Date.now();
+    return now < expiresAt && ip === userIP;
+  } catch (e) {
+    // 解析失败则清除无效数据
+    localStorage.removeItem('authValidation');
+    return false;
+  }
+}
+
+// 保存验证状态到本地存储
+function saveAuthStatus() {
+  const expiresAt = Date.now() + VALIDITY_DURATION;
+  const authData = {
+    expiresAt,
+    ip: userIP
+  };
+  localStorage.setItem('authValidation', JSON.stringify(authData));
+}
+
+// 显示已验证成功的状态
+function showAuthenticatedContent() {
+  const title = document.querySelector(".title");
+  const passwordInput = document.getElementById("pwd");
+  const content = document.getElementById("content");
+  
+  title.innerText = "✅ 验证成功 · 欢迎访问";
+  content.style.display = "block";
+  passwordInput.style.display = "none";
+  document.querySelector("button").style.display = "none";
+  document.getElementById("tip").innerText = "";
+}
+
+// 获取IP地址
+async function getIP() {
+  try {
+    const response = await fetch(IP_API);
+    if (!response.ok) throw new Error("IP接口请求失败");
+    
+    const data = await response.json();
+    userIP = data.ip || "未知";
+    document.getElementById("ipText").innerText = `📡 你的IP：${userIP}（已记录）`;
+    
+    // IP获取完成后检查验证状态
+    if (checkValidAuth()) {
+      showAuthenticatedContent();
+    }
+  } catch(error) {
+    console.error("获取IP失败：", error);
+    document.getElementById("ipText").innerText = "📡 IP获取失败";
+    
+    // 即使IP获取失败，仍检查验证状态（仅检查时间）
+    const authData = localStorage.getItem('authValidation');
+    if (authData) {
+      try {
+        const { expiresAt } = JSON.parse(authData);
+        if (Date.now() < expiresAt) {
+          showAuthenticatedContent();
+        }
+      } catch (e) {
+        localStorage.removeItem('authValidation');
+      }
+    }
+  }
+}
+
+// 验证密码
+function check() {
+  // 防抖处理，防止重复点击
+  if (isChecking) return;
+  isChecking = true;
+  
+  const passwordInput = document.getElementById("pwd");
+  const val = passwordInput.value.trim();
+  const tip = document.getElementById("tip");
+  
+  // 清空提示
+  tip.innerText = "";
+  
+  // 验证密码
+  if (val === PASSWORD) {
+    // 验证成功
+    saveAuthStatus(); // 保存验证状态
+    showAuthenticatedContent();
+  } else {
+    // 验证失败
+    tip.innerText = "密码错误，请重试";
+    passwordInput.style.borderColor = "#ff4444";
+    
+    // 重置边框颜色
+    setTimeout(() => {
+      passwordInput.style.borderColor = "#00e5ff";
+    }, 2000);
+  }
+  
+  // 解除防抖
+  setTimeout(() => {
+    isChecking = false;
+  }, 1000);
+}
+
+// 回车提交
+document.getElementById("pwd").addEventListener("keypress", e => {
+  if (e.key === "Enter") check();
+});
+
+// 窗口大小变化时重置数字雨
+function resizeMatrix() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  cols = Math.floor(canvas.width / 14);
+  drops = Array(cols).fill(0);
+}
+
+// 数字雨背景效果
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+let cols, drops;
+resizeMatrix(); // 初始化尺寸
+
+function drawMatrix() {
+  // 半透明遮罩，实现拖影效果
+  ctx.fillStyle = "rgba(0,0,0,0.08)";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // 设置文字样式
+  ctx.fillStyle = "#00e5ff";
+  ctx.font = "14px monospace";
+  
+  // 绘制数字雨
+  for (let i = 0; i < cols; i++) {
+    // 随机显示0或1
+    const text = Math.random() > 0.5 ? "0" : "1";
+    ctx.fillText(text, i * 14, drops[i] * 14);
+    
+    // 重置下落位置
+    if (drops[i] * 14 > canvas.height && Math.random() > 0.97) {
+      drops[i] = 0;
+    }
+    drops[i]++;
+  }
+}
+
+// 初始化
+window.addEventListener("resize", resizeMatrix);
+setInterval(drawMatrix, 35);
+getIP();
+</script>
+</body>
+</html>
